@@ -263,7 +263,7 @@ void nicola_om_type(void) {
             case NG_J   : send_string("o" ); break;
             case NG_K   : send_string("no"); break;
             case NG_L   : send_string("lyo");break;
-            case NG_SCLN: send_string("ltu");break;
+            case NG_SCLN: send_string("xtu");break;
             case NG_QUOT: send_string("'" ); break;
 
             case NG_Z   :                    break;
