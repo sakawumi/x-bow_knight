@@ -84,6 +84,8 @@ typedef enum nicola_keycodes {
   NG_BOTTOM = NG_SHFTR,
   
   FUNC_01,
+  FUNC_ROGUE,
+  FUNC_DEFAULT,
   VI_MODE,
   JIS2US_TOP,
   JIS2US_GRV,
