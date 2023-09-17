@@ -11,6 +11,7 @@ enum keymap_layers {
   _ROGUE,
   _HJKL,
   _SMODI,
+  _ROGUE_SMODI,
   _QWERTY,
   _MODI,
   _FUNC
@@ -44,22 +45,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		KC_TAB,            KC_NO   , KC_NO    ,KC_NO   ,KC_NO,   KC_NO,           KC_NO,   KC_HOME, KC_NO,     KC_NO,    KC_PGUP, KC_NO ,   KC_NO ,   KC_NO,    KC_PGUP,
 		JP_MHEN ,          KC_NO,    KC_NO,    KC_NO,   KC_NO,   KC_NO,  KC_BSPC, KC_NO,   KC_LEFT, KC_DOWN,   KC_UP,    KC_RGHT, KC_NO    ,KC_NO,    KC_PGDN,
 		KC_LSFT,           C(KC_Z),  C(KC_X),  C(KC_C), C(KC_V), KC_NO,  KC_ENT,  KC_NO,   KC_END,  KC_NO,     KC_NO,    KC_PGDN, KC_RSFT,  KC_UP, 
-		KC_LCTL,           KC_LGUI, KC_LALT,         KC_SPC, KC_RCTL,             KC_LSFT, VI_MODE,  JP_HENK,   MO(_FUNC),KC_RCTL, KC_LEFT,  KC_DOWN, KC_RGHT),
+		KC_LCTL,           KC_LGUI, KC_LALT,         KC_SPC, KC_RCTL,             KC_LSFT, VI_MODE, JP_HENK,   MO(_FUNC),KC_RCTL, KC_LEFT,  KC_DOWN, KC_RGHT),
   [_ROGUE] = LAYOUT(
 		KC_ESC,            KC_F1,   KC_F2,   KC_F3,  KC_F4,  KC_F5,   KC_F6,   KC_F7,  KC_F8,   KC_F9,     KC_F10,   KC_F11,  KC_F12,   KC_DEL,  KC_PSCR,
 		JP_GRV ,           KC_1,    KC_2,    KC_3,   KC_4,   KC_5,             KC_6,   KC_7,    KC_8,      KC_9,     KC_0,    JP_LBRC,  JP_RBRC, KC_BSPC,
 		KC_TAB,            JP_QUOT, JP_COMM ,JP_DOT ,KC_P,   KC_Y,    KC_F,    KC_7,   KC_9,    KC_R,      KC_L,     JP_SLSH, JP_EQL  , JP_YEN , KC_PGUP,
 		KC_NO ,            KC_A,    KC_O,    KC_E,   KC_U,   KC_I,    KC_BSPC, KC_D,   KC_4,    KC_2,      KC_8,     KC_6,    KC_S     ,KC_ENT,  KC_PGDN,
-		MO(_SMODI),        JP_SCLN ,KC_Q,    KC_J,   KC_K,   KC_X,    KC_ENT,  KC_B,   KC_1,    KC_3,      KC_V,     KC_Z,    KC_RSFT,  KC_UP, 
+		MO(_ROGUE_SMODI),        JP_SCLN ,KC_Q,    KC_J,   KC_K,   KC_X,    KC_ENT,  KC_B,   KC_1,    KC_3,      KC_V,     KC_Z,    KC_RSFT,  KC_UP, 
 		KC_LCTL           ,KC_LGUI, KC_LALT,         KC_SPC, KC_RCTL,          MO(_SMODI), MO(_HJKL), KC_NO,MO(_FUNC),KC_RCTL, KC_LEFT,  KC_DOWN, KC_RGHT),
   [_HJKL] = LAYOUT(
 		KC_ESC,            KC_F1,   KC_F2,   KC_F3,  KC_F4,  KC_F5,   KC_F6,   KC_F7,  KC_F8,   KC_F9,     KC_F10,   KC_F11,  KC_F12,   KC_DEL,  KC_PSCR,
 		JP_GRV ,           KC_1,    KC_2,    KC_3,   KC_4,   KC_5,             KC_6,   KC_7,    KC_8,      KC_9,     KC_0,    JP_LBRC,  JP_RBRC, KC_BSPC,
 		KC_TAB,            JP_QUOT, JP_COMM ,JP_DOT ,KC_P,   KC_Y,    KC_F,    KC_G,   KC_C,    KC_R,      KC_L,     JP_SLSH, JP_EQL  , JP_YEN , KC_PGUP,
 		KC_NO ,          KC_A,    KC_O,    KC_E,   KC_U,   KC_I,    KC_BSPC,   KC_D,   KC_H,    KC_T,      KC_N,     KC_S,    JP_MINS  ,KC_ENT,  KC_PGDN,
-		MO(_SMODI),        JP_SCLN ,KC_Q,    KC_J,   KC_K,   KC_X,    KC_ENT,  KC_B,   KC_M,    KC_W,      KC_V,     KC_Z,    KC_RSFT,  KC_UP, 
-		KC_LCTL,          KC_LGUI, KC_LALT,         KC_SPC, KC_RCTL,        MO(_SMODI),X__X,   KC_NO,MO(_FUNC),KC_RCTL, KC_LEFT,  KC_DOWN, KC_RGHT),
- [_SMODI] = LAYOUT(
+		MO(_ROGUE_SMODI),        JP_SCLN ,KC_Q,    KC_J,   KC_K,   KC_X,    KC_ENT,  KC_B,   KC_M,    KC_W,      KC_V,     KC_Z,    KC_RSFT,  KC_UP, 
+		KC_LCTL,          KC_LGUI, KC_LALT,         KC_SPC, KC_RCTL,        MO(_ROGUE_SMODI),X__X,   X__X,MO(_FUNC),KC_RCTL, KC_LEFT,  KC_DOWN, KC_RGHT),
+  [_ROGUE_SMODI] = LAYOUT(
+		S(KC_ESC),    S(KC_F1),     S(KC_F2),     S(KC_F3),    S(KC_F4),  S(KC_F5),   S(KC_F6),    S(KC_F7),    S(KC_F8),    S(KC_F9),     S(KC_F10),   S(KC_F11),    S(KC_F12),    S(KC_DEL), KC_PSCR,
+		JP_TILD ,  JP_EXLM,   JP_AT,     JP_HASH,  JP_DLR ,JP_PERC,           JP_CIRC,  JP_AMPR,  JP_ASTR,   JP_LPRN,  JP_RPRN,   JP_LCBR ,  JP_RCBR,   S(KC_BSPC),  
+		S(KC_TAB), JP_DQUO,   JP_LABK,   JP_RABK,  S(KC_P),S(KC_Y), S(KC_F),  S(KC_G),  S(KC_C),  S(KC_R),   S(KC_L),  JP_QUES,   JP_PLUS,   JP_PIPE ,  S(KC_HOME),
+		S(KC_CAPS),S(KC_A),   S(KC_O),   S(KC_E),  S(KC_U),S(KC_I), KC_BSPC,  S(KC_D),  S(KC_H),  S(KC_T),   S(KC_N),  S(KC_S),   JP_UNDS,   S(KC_ENT), S(KC_END),
+		X__X,   JP_COLN ,  S(KC_Q),   S(KC_J),  S(KC_K),S(KC_X), S(KC_ENT),S(KC_B),  S(KC_M),  S(KC_W),   S(KC_V),  S(KC_Z),   KC_RSFT,   S(KC_UP),
+		S(KC_LCTL),S(KC_LGUI),          S(KC_LALT),S(KC_SPC),X__X,         X__X,  S(KC_SPC),X__X,MO(_FUNC),S(KC_RCTL),S(KC_LEFT),S(KC_DOWN),S(KC_RGHT)),
+  [_SMODI] = LAYOUT(
 		S(KC_ESC),    S(KC_F1),     S(KC_F2),     S(KC_F3),    S(KC_F4),  S(KC_F5),   S(KC_F6),    S(KC_F7),    S(KC_F8),    S(KC_F9),     S(KC_F10),   S(KC_F11),    S(KC_F12),    S(KC_DEL), KC_PSCR,
 		JP_TILD ,  JP_EXLM,   JP_AT,     JP_HASH,  JP_DLR ,JP_PERC,           JP_CIRC,  JP_AMPR,  JP_ASTR,   JP_LPRN,  JP_RPRN,   JP_LCBR ,  JP_RCBR,   S(KC_BSPC),  
 		S(KC_TAB), JP_DQUO,   JP_LABK,   JP_RABK,  S(KC_P),S(KC_Y), S(KC_F),  S(KC_G),  S(KC_C),  S(KC_R),   S(KC_L),  JP_QUES,   JP_PLUS,   JP_PIPE ,  S(KC_HOME),
@@ -126,7 +134,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           layer_move(_ROGUE);
         return false;
 			case VI_MODE :
-        layer_invert(_VI);
+        layer_move(_VI);
   			tap_code(KC_MHEN);
         return false;
       case FUNC_DEFAULT:
