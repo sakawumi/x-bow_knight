@@ -26,7 +26,8 @@ bool nicola_state(void);
 bool process_nicola(uint16_t, keyrecord_t *);
 void set_nicola(uint8_t);
 
-typedef enum nicola_keycodes {
+typedef enum nicola_keycodes
+{
   NG_TOP = SAFE_RANGE,
   NG_M_TOP = NG_TOP,
   NG_1 = NG_TOP,
@@ -82,7 +83,7 @@ typedef enum nicola_keycodes {
   NG_SHFTR,
 
   NG_BOTTOM = NG_SHFTR,
-  
+
   FUNC_01,
   FUNC_ROGUE,
   FUNC_DEFAULT,
@@ -96,17 +97,22 @@ typedef enum nicola_keycodes {
   JIS2US_EQUAL,
   JIS2US_BSLS,
   JIS2US_MINS,
-  JIS2US_1  ,
-  JIS2US_2  ,
-  JIS2US_3  ,
-  JIS2US_4  ,
-  JIS2US_5  ,
-  JIS2US_6  ,
-  JIS2US_7  ,
-  JIS2US_8  ,
-  JIS2US_9 ,
+  JIS2US_1,
+  JIS2US_2,
+  JIS2US_3,
+  JIS2US_4,
+  JIS2US_5,
+  JIS2US_6,
+  JIS2US_7,
+  JIS2US_8,
+  JIS2US_9,
   JIS2US_0,
   JIS2US_SCLN,
-  JIS2US_BOTTOM
-
+  JIS2US_BOTTOM,
+  CH_LAYER,
+  CH_JP,
+  CH_EN,
+  CH_VI,
+  CH_QWERTY,
+  CH_LAYER_END
 } NGKEYS;

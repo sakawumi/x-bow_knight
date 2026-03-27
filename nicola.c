@@ -69,7 +69,7 @@ void nicola_on(void) {
   layer_on(nicola_layer);
 
   // tap_code(KC_LANG1); // Mac
-  tap_code(KC_HENK);
+  tap_code(KC_F24);
 }
 
 void nicola_off(void) {
@@ -78,7 +78,7 @@ void nicola_off(void) {
   layer_off(nicola_layer);
 
   // tap_code(KC_LANG2); // Mac
-  tap_code(KC_MHEN);
+  tap_code(KC_F23);
 }
 
 // 親指シフトの状態
@@ -157,7 +157,7 @@ void nicola_m_type(void) {
         case NG_K   : send_string("ki"); break;
         case NG_L   : send_string("i" ); break;
         case NG_SCLN: send_string("nn"); break;
-        case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
+        //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
         case NG_Z   : send_string("." ); break;
         case NG_X   : send_string("hi"); break;
@@ -173,24 +173,25 @@ void nicola_m_type(void) {
 }
 
 void nicola_o_type(void) {
-    if(nicola_o_key != 0) {
-        //send_string(" ");
-    }
+  switch(nicola_o_key){
+    case NG_SHFTL: send_string(" "); break;
+    case NG_SHFTR: send_string("\n");break;
+  }
 }
 
 void nicola_om_type(void) {
     if(nicola_o_key == NG_SHFTL) {
         switch(nicola_m_key) {
-            case NG_1   : send_string("?" ); break;
-            case NG_2   :                    break;
-            case NG_3   : send_string("+" ); break;
-            case NG_4   : send_string("]");  break;
-            case NG_5   : send_string("\\"); break;
-            case NG_6   :                    break;
-            case NG_7   :                    break;
-            case NG_8   :                    break;
-            case NG_9   :                    break;
-            case NG_0   :                    break;
+            case NG_1   : send_string("!" ); break;
+            case NG_2   : send_string("@" ); break;
+            case NG_3   : send_string("#" ); break;
+            case NG_4   : send_string("$");  break;
+            case NG_5   : send_string("%");  break;
+            case NG_6   : send_string("^");  break;
+            case NG_7   : send_string("&");  break;
+            case NG_8   : send_string("*");  break;
+            case NG_9   : send_string("(");  break;
+            case NG_0   : send_string(")");  break;
 
             case NG_Q   : send_string("la"); break;
             case NG_W   : send_string("e" ); break;
@@ -215,7 +216,7 @@ void nicola_om_type(void) {
             case NG_K   : send_string("gi"); break;
             case NG_L   : send_string("po"); break;
             case NG_SCLN:                    break;
-            case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
+            //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
             case NG_Z   : send_string("lu"); break;
             case NG_X   : send_string("-" ); break;
@@ -230,16 +231,16 @@ void nicola_om_type(void) {
         }
     } else if(nicola_o_key == NG_SHFTR) {
         switch(nicola_m_key) {
-            case NG_1   : send_string("?" ); break;
-            case NG_2   :                    break;
-            case NG_3   : send_string("+" ); break;
-            case NG_4   : send_string("]");  break;
-            case NG_5   : send_string("\\"); break;
-            case NG_6   :                    break;
-            case NG_7   :                    break;
-            case NG_8   :                    break;
-            case NG_9   :                    break;
-            case NG_0   :                    break;
+            case NG_1   : send_string("!" ); break;
+            case NG_2   : send_string("@" ); break;
+            case NG_3   : send_string("#" ); break;
+            case NG_4   : send_string("$");  break;
+            case NG_5   : send_string("%");  break;
+            case NG_6   : send_string("^");  break;
+            case NG_7   : send_string("&");  break;
+            case NG_8   : send_string("*");  break;
+            case NG_9   : send_string("(");  break;
+            case NG_0   : send_string(")");  break;
 
             case NG_Q   :                    break;
             case NG_W   : send_string("ga"); break;
