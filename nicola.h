@@ -30,18 +30,8 @@ typedef enum nicola_keycodes
 {
   NG_TOP = SAFE_RANGE,
   NG_M_TOP = NG_TOP,
-  NG_1 = NG_TOP,
-  NG_2,
-  NG_3,
-  NG_4,
-  NG_5,
-  NG_6,
-  NG_7,
-  NG_8,
-  NG_9,
-  NG_0,
 
-  NG_Q,
+  NG_Q = NG_TOP,
   NG_W,
   NG_E,
   NG_R,
@@ -108,11 +98,5 @@ typedef enum nicola_keycodes
   JIS2US_9,
   JIS2US_0,
   JIS2US_SCLN,
-  JIS2US_BOTTOM,
-  CH_LAYER,
-  CH_JP,
-  CH_EN,
-  CH_VI,
-  CH_QWERTY,
-  CH_LAYER_END
+  JIS2US_BOTTOM
 } NGKEYS;

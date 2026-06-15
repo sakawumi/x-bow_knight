@@ -20,8 +20,9 @@
 
 #include QMK_KEYBOARD_H
 #include "nicola.h"
-#include "key_duration.c"
+#include "deferred_exec.h"
 #include <timer.h>
+#include "sendstring_japanese.h"
 
 static bool is_nicola = false; // 親指シフトがオンかオフか
 static uint8_t nicola_layer = 0; // レイヤー番号
@@ -46,6 +47,25 @@ static uint16_t nicola_o_time;
 
 static int key_process_guard = 0;
 void keypress_timer_expired(void);
+static deferred_token timeout_token = INVALID_DEFERRED_TOKEN;
+
+static uint32_t nicola_timeout(uint32_t trigger_time, void *cb_arg) {
+  if(key_process_guard) {
+    return 1;
+  }
+
+  timeout_token = INVALID_DEFERRED_TOKEN;
+  keypress_timer_expired();
+  return 0;
+}
+
+static void keypress_timer_start(void) {
+  if(timeout_token == INVALID_DEFERRED_TOKEN) {
+    timeout_token = defer_exec(TIMEOUT_THRESHOLD, nicola_timeout, NULL);
+  } else {
+    extend_deferred_exec(timeout_token, TIMEOUT_THRESHOLD);
+  }
+}
 
 // if we have independent timeout routine, no need to check timeout on key press
 #ifdef TIMEOUT_INTERRUPT
@@ -66,19 +86,11 @@ void set_nicola(uint8_t layer) {
 void nicola_on(void) {
   is_nicola = true;
   nicola_clear();
-  layer_on(nicola_layer);
-
-  // tap_code(KC_LANG1); // Mac
-  tap_code(KC_F24);
 }
 
 void nicola_off(void) {
   is_nicola = false;
   nicola_clear();
-  layer_off(nicola_layer);
-
-  // tap_code(KC_LANG2); // Mac
-  tap_code(KC_F23);
 }
 
 // 親指シフトの状態
@@ -88,52 +100,17 @@ bool nicola_state(void) {
 
 // バッファをクリアする
 void nicola_clear(void) {
+  if(timeout_token != INVALID_DEFERRED_TOKEN) {
+    cancel_deferred_exec(timeout_token);
+    timeout_token = INVALID_DEFERRED_TOKEN;
+  }
   nicola_int_state = NICOLA_STATE_S1_INIT;
   key_process_guard = 0;
 }
 
-// int n_modifier = 0;
-// // 入力モードか編集モードかを確認する
-// void nicola_mode(uint16_t keycode, keyrecord_t *record) {
-//   if (!is_nicola) return;
-
-//   // modifierが押されたらレイヤーをオフ
-//   switch (keycode) {
-//     case KC_LCTRL:
-//     case KC_LSHIFT:
-//     case KC_LALT:
-//     case KC_LGUI:
-//     case KC_RCTRL:
-//     case KC_RSHIFT:
-//     case KC_RALT:
-//     case KC_RGUI:
-//       if (record->event.pressed) {
-//         n_modifier++;
-//         layer_off(nicola_layer);
-//       } else {
-//         n_modifier--;
-//         if (n_modifier == 0) {
-//           layer_on(nicola_layer);
-//         }
-//       }
-//       break;
-//   }
-
-// }
-
 void nicola_m_type(void) {
+  if(is_nicola) {
     switch(nicola_m_key) {
-        case NG_1   : send_string("1" ); break;
-        case NG_2   : send_string("2" ); break;
-        case NG_3   : send_string("3" ); break;
-        case NG_4   : send_string("4" ); break;
-        case NG_5   : send_string("5" ); break;
-        case NG_6   : send_string("6" ); break;
-        case NG_7   : send_string("7" ); break;
-        case NG_8   : send_string("8" ); break;
-        case NG_9   : send_string("9" ); break;
-        case NG_0   : send_string("0" ); break;
-
         case NG_Q   : send_string("." ); break;
         case NG_W   : send_string("ka"); break;
         case NG_E   : send_string("ta"); break;
@@ -170,6 +147,45 @@ void nicola_m_type(void) {
         case NG_DOT : send_string("ho"); break;
         case NG_SLSH: send_string("/" ); break;
     }
+  } else {
+    switch(nicola_m_key) {
+        case NG_Q   : send_string("'" ); break;
+        case NG_W   : send_string(","); break;
+        case NG_E   : send_string("."); break;
+        case NG_R   : send_string("p"); break;
+        case NG_T   : send_string("y"); break;
+        case NG_Y   : send_string("f"); break;
+        case NG_U   : send_string("g"); break;
+        case NG_I   : send_string("c"); break;
+        case NG_O   : send_string("r"); break;
+        case NG_P   : send_string("l" ); break;
+        case NG_LBRC: send_string("[" ); break;
+        case NG_RBRC: send_string("]" ); break;
+
+        case NG_A   : send_string("a" ); break;
+        case NG_S   : send_string("o"); break;
+        case NG_D   : send_string("e"); break;
+        case NG_F   : send_string("u"); break;
+        case NG_G   : send_string("i"); break;
+        case NG_H   : send_string("d"); break;
+        case NG_J   : send_string("h"); break;
+        case NG_K   : send_string("t"); break;
+        case NG_L   : send_string("n" ); break;
+        case NG_SCLN: send_string("s"); break;
+        //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
+
+        case NG_Z   : send_string(";" ); break;
+        case NG_X   : send_string("q"); break;
+        case NG_C   : send_string("j"); break;
+        case NG_V   : send_string("k"); break;
+        case NG_B   : send_string("x"); break;
+        case NG_N   : send_string("b"); break;
+        case NG_M   : send_string("m"); break;
+        case NG_COMM: send_string("w"); break;
+        case NG_DOT : send_string("v"); break;
+        case NG_SLSH: send_string("z" ); break;
+    }
+  }
 }
 
 void nicola_o_type(void) {
@@ -180,19 +196,9 @@ void nicola_o_type(void) {
 }
 
 void nicola_om_type(void) {
+  if(is_nicola) {
     if(nicola_o_key == NG_SHFTL) {
         switch(nicola_m_key) {
-            case NG_1   : send_string("!" ); break;
-            case NG_2   : send_string("@" ); break;
-            case NG_3   : send_string("#" ); break;
-            case NG_4   : send_string("$");  break;
-            case NG_5   : send_string("%");  break;
-            case NG_6   : send_string("^");  break;
-            case NG_7   : send_string("&");  break;
-            case NG_8   : send_string("*");  break;
-            case NG_9   : send_string("(");  break;
-            case NG_0   : send_string(")");  break;
-
             case NG_Q   : send_string("la"); break;
             case NG_W   : send_string("e" ); break;
             case NG_E   : send_string("ri"); break;
@@ -231,17 +237,6 @@ void nicola_om_type(void) {
         }
     } else if(nicola_o_key == NG_SHFTR) {
         switch(nicola_m_key) {
-            case NG_1   : send_string("!" ); break;
-            case NG_2   : send_string("@" ); break;
-            case NG_3   : send_string("#" ); break;
-            case NG_4   : send_string("$");  break;
-            case NG_5   : send_string("%");  break;
-            case NG_6   : send_string("^");  break;
-            case NG_7   : send_string("&");  break;
-            case NG_8   : send_string("*");  break;
-            case NG_9   : send_string("(");  break;
-            case NG_0   : send_string(")");  break;
-
             case NG_Q   :                    break;
             case NG_W   : send_string("ga"); break;
             case NG_E   : send_string("da"); break;
@@ -279,6 +274,84 @@ void nicola_om_type(void) {
             case NG_SLSH: send_string("lo"); break;
         }
     }
+  } else {
+        if(nicola_o_key == NG_SHFTL) {
+        switch(nicola_m_key) {
+            case NG_Q   : send_string("1"); break;
+            case NG_W   : send_string("2" ); break;
+            case NG_E   : send_string("3"); break;
+            case NG_R   : send_string("4");break;
+            case NG_T   : send_string("5"); break;
+            case NG_Y   : send_string("6"); break;
+            case NG_U   : send_string("7"); break;
+            case NG_I   : send_string("8"); break;
+            case NG_O   : send_string("9"); break;
+            case NG_P   : send_string("0"); break;
+            // case NG_LBRC: send_string("{" ); break;
+            // case NG_RBRC: send_string("}" ); break;
+
+            case NG_A   : tap_code(KC_F1); break;
+            case NG_S   : tap_code(KC_F2); break;
+            case NG_D   : tap_code(KC_F3); break;
+            case NG_F   : tap_code(KC_F4); break;
+            case NG_G   : tap_code(KC_F5); break;
+
+            case NG_H   : tap_code(KC_F6); break;
+            case NG_J   : send_string("="); break;
+            case NG_K   : send_string("/"); break;
+            case NG_L   : send_string("["); break;
+            case NG_SCLN: send_string("]");  break;
+            //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
+
+            case NG_Z   : tap_code(KC_F7); break;
+            case NG_X   : tap_code(KC_F8); break;
+            case NG_C   : tap_code(KC_F9); break;
+            case NG_V   : tap_code(KC_F10); break;
+            case NG_B   : tap_code(KC_F11); break;
+            case NG_N   : tap_code(KC_F12); break;
+            case NG_M   : tap_code(KC_ESC); break;
+            case NG_COMM: send_string("-"); break;
+            case NG_DOT : send_string("`"); break;
+            case NG_SLSH: send_string("\\" ); break;
+        }
+    } else if(nicola_o_key == NG_SHFTR) {
+        switch(nicola_m_key) {
+            case NG_Q   : send_string("!"); break;
+            case NG_W   : send_string("@"); break;
+            case NG_E   : send_string("#"); break;
+            case NG_R   : send_string("$"); break;
+            case NG_T   : send_string("%"); break;
+            case NG_Y   : send_string("^"); break;
+            case NG_U   : send_string("&"); break;
+            case NG_I   : send_string("*"); break;
+            case NG_O   : send_string("("); break;
+            case NG_P   : send_string(")"); break;
+
+            case NG_A   : tap_code(KC_F1); break;
+            case NG_S   : tap_code(KC_F2); break;
+            case NG_D   : tap_code(KC_F3); break;
+            case NG_F   : tap_code(KC_F4); break;
+            case NG_G   : tap_code(KC_F5); break;
+            case NG_H   : tap_code(KC_F6); break;
+
+            case NG_J   : send_string("+" ); break;
+            case NG_K   : send_string("?"); break;
+            case NG_L   : send_string("{");break;
+            case NG_SCLN: send_string("}");  break;
+            case NG_Z   : tap_code(KC_F7); break;
+            case NG_X   : tap_code(KC_F8); break;
+            case NG_C   : tap_code(KC_F9); break;
+            case NG_V   : tap_code(KC_F10); break;
+            case NG_B   : tap_code(KC_F11); break;
+            case NG_N   : tap_code(KC_F12); break;
+            case NG_M   : tap_code(KC_ESC); break;
+            // case NG_M   : send_string("yu"); break;
+            case NG_COMM: send_string("_"); break;
+            case NG_DOT : send_string("~"); break;
+            case NG_SLSH: send_string("|"); break;
+        }
+    }
+  }
 }
 
 // 親指シフトの入力処理
@@ -340,10 +413,23 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         }
         nicola_m_key = keycode;
         nicola_m_time = curr_time;
-        keypress_timer_start(TIMEOUT_THRESHOLD * 16);
+        keypress_timer_start();
         cont_process = false;
     } else if(keycode == NG_SHFTL || keycode == NG_SHFTR) {
         // O key
+        if (nicola_int_state == NICOLA_STATE_S3_O && nicola_o_key != keycode) {
+          if (nicola_o_key == NG_SHFTL) {
+            nicola_on();
+            tap_code(KC_INT4);
+          } else {
+            nicola_off();
+            tap_code(KC_INT5);
+          }
+
+          key_process_guard = 0;
+          return false;
+        }
+
         switch(nicola_int_state) {
           case NICOLA_STATE_S1_INIT:
             // no timeout check
@@ -393,7 +479,7 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         }
         nicola_o_key = keycode;
         nicola_o_time = curr_time;
-        keypress_timer_start(TIMEOUT_THRESHOLD * 16);
+        keypress_timer_start();
         cont_process = false;
     } else {
         // その他のキーが押された
