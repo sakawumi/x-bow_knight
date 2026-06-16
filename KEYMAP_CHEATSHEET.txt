@@ -1,0 +1,137 @@
+cheapino キーマップ早見表
+=========================
+
+参照元:
+- keymaps/thebestkeymap/keymap.c
+- nicola.c
+- nicola.h
+
+表の読み方
+----------
+
+下の表は、左右それぞれ 3x5 のメインキーと、左右 3 個ずつの親指キーを表します。
+
+メインキー:
+
+  左手                              右手
+  Q    W    E    R    T             Y    U    I    O    P
+  A    S    D    F    G             H    J    K    L    ;
+  Z    X    C    V    B             N    M    ,    .    /
+
+ベースレイヤーの親指キー:
+
+  左親指                            右親指
+  NG_SHFTL  Tab/Ctrl  Esc/FUNC      Del/FUNC2  Bspc/Shift  NG_SHFTR
+
+タップ/ホールド:
+- Tab/Ctrl: タップ = Tab、ホールド = 左 Ctrl
+- Esc/FUNC: タップ = Esc、ホールド = FUNC レイヤー
+- Del/FUNC2: タップ = Delete、ホールド = FUNC2 レイヤー
+- Bspc/Shift: タップ = Backspace、ホールド = 右 Shift
+- NG_SHFTL: NICOLA 左親指シフト。単独タップは Space
+- NG_SHFTR: NICOLA 右親指シフト。単独タップは Enter
+
+NICOLA モード切替:
+- NG_SHFTL を押し、保留中に NG_SHFTR を押す:
+  NICOLA on にして KC_INT4 をタップ
+- NG_SHFTR を押し、保留中に NG_SHFTL を押す:
+  NICOLA off にして KC_INT5 をタップ
+
+タイミング:
+- NICOLA 同時打鍵タイムアウト: 150 ms
+- 3キー判定の一部で使う重なりしきい値: 20 ms
+
+
+ベースレイヤー: _NICOLA
+-----------------------
+
+メインキーは NG_* の独自キーコードです。出力内容は nicola.c で処理されます。
+NICOLA on/off 時の出力は、下の各表を参照してください。
+
+  左手                              右手
+  NG_Q NG_W NG_E NG_R NG_T          NG_Y NG_U NG_I    NG_O   NG_P
+  NG_A NG_S NG_D NG_F NG_G          NG_H NG_J NG_K    NG_L   NG_SCLN
+  NG_Z NG_X NG_C NG_V NG_B          NG_N NG_M NG_COMM NG_DOT NG_SLSH
+
+  左親指                            右親指
+  NG_SHFTL  Tab/Ctrl  Esc/FUNC      Del/FUNC2  Bspc/Shift  NG_SHFTR
+
+
+FUNC レイヤー: Esc/FUNC をホールド
+----------------------------------
+
+  左手                              右手
+  QK_BOOT  --       --       --       PrintScreen     --     --     --     --     --
+  --       Ctrl+A   Ctrl+S   Delete   Ctrl+/          --     Left   Down   Up     Right
+  LAlt     Ctrl+Z   Ctrl+X   Ctrl+C   Ctrl+V          --     --     --     --     --
+
+  左親指                            右親指
+  LGUI      LCTL     --             --       RSFT    RALT
+
+
+FUNC2 レイヤー: Del/FUNC2 をホールド
+------------------------------------
+
+  左手                              右手
+  --    --    --    --     --        --    --    --    --    --
+  F1    F2    F3    F4     F5        F6    --    --    --    --
+  F7    F8    F9    F10    F11       F12   --    --    --    --
+
+  左親指                            右親指
+  LGUI  LCTL  --                    --    RSFT  RALT
+
+
+NICOLA on: 親指シフトなし
+-------------------------
+
+  左手                              右手
+  。     か     た     こ     さ      ら     ち     く     つ     、
+  う     し     て     け     せ      は     と     き     い     ん
+  。     ひ     す     ふ     へ      め     そ     ね     ほ     /
+
+
+NICOLA on: 左親指シフト NG_SHFTL
+--------------------------------
+
+  左手                              右手
+  ぁ     え     り     ゃ     れ      ぱ     ぢ     ぐ     づ     ぴ
+  を     あ     な     ゅ     も      ば     ど     ぎ     ぽ     --
+  ぅ     -      ろ     や     ぃ      ぷ     ぞ     ぺ     ぼ     ?
+
+
+NICOLA on: 右親指シフト NG_SHFTR
+--------------------------------
+
+  左手                              右手
+  --     が     だ     ご     ざ      よ     に     る     ま     ぇ
+  ヴ     じ     で     げ     ぜ      み     お     の     ょ     っ
+  --     び     ず     ぶ     べ      ぬ     ゆ     む     わ     ぉ
+
+
+NICOLA off: 親指シフトなし
+--------------------------
+
+NICOLA off 時に nicola_m_type() から出力される英字配列です。
+
+  左手                              右手
+  '      ,      .      p      y       f      g      c      r      l
+  a      o      e      u      i       d      h      t      n      s
+  ;      q      j      k      x       b      m      w      v      z
+
+
+NICOLA off: 左親指シフト NG_SHFTL
+---------------------------------
+
+  左手                              右手
+  1        2        3      4       5        6      7      8      9      0
+  Ctrl+A   Ctrl+S   F3     Ctrl+/  F5       F6     =      /      [      ]
+  Ctrl+Z   Ctrl+X   Ctrl+C Ctrl+V  F11      F12    ;      -      `      \
+
+
+NICOLA off: 右親指シフト NG_SHFTR
+---------------------------------
+
+  左手                              右手
+  !      @      #      $      %       ^      &      *      (      )
+  F1     F2     F3     F4     F5      F6     +      ?      {      }
+  :      F8     F9     F10    F11     F12    :      _      ~      |
