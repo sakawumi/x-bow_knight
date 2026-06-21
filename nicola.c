@@ -136,9 +136,8 @@ void nicola_m_type(void) {
         case NG_K   : send_string("ki"); break;
         case NG_L   : send_string("i" ); break;
         case NG_SCLN: send_string("nn"); break;
-        //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
-        case NG_Z   : send_string("." ); break;
+        case NG_Z   :                    break;
         case NG_X   : send_string("hi"); break;
         case NG_C   : send_string("su"); break;
         case NG_V   : send_string("hu"); break;
@@ -176,7 +175,7 @@ void nicola_m_type(void) {
         case NG_SCLN: send_string("s"); break;
         //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
-        case NG_Z   : send_string(";" ); break;
+        case NG_Z   :                   break;
 
         case NG_X   : send_string("q"); break;
         case NG_C   : send_string("j"); break;
@@ -224,7 +223,7 @@ void nicola_om_type(void) {
             case NG_J   : send_string("do"); break;
             case NG_K   : send_string("gi"); break;
             case NG_L   : send_string("po"); break;
-            case NG_SCLN:                    break;
+            case NG_SCLN: send_string("!" ); break;
             //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
             case NG_Z   : send_string("lu"); break;
@@ -341,8 +340,8 @@ void nicola_om_type(void) {
             case NG_K   : send_string("?"); break;
             case NG_L   : send_string("{");break;
             case NG_SCLN: send_string("}");  break;
-            
-            case NG_Z   : send_string(":" ); break;
+
+            case NG_Z   :                    break;
             case NG_X   : tap_code16(KC_F8); break;
             case NG_C   : tap_code16(KC_F9); break;
             case NG_V   : tap_code16(KC_F10); break;

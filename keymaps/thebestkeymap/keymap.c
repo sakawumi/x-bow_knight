@@ -33,15 +33,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         NG_Z,   NG_X, NG_C,  NG_V,  NG_B,             NG_N, NG_M, NG_COMM  , NG_DOT, NG_SLSH,
         NG_SHFTL , CTL_T(KC_TAB), LT(_FUNC, KC_ESC),    LT(_FUNC2, KC_DEL), SFT_T(KC_BSPC), NG_SHFTR),
     [_FUNC] = LAYOUT_split_3x5_3(
-        QK_BOOT, x__x,    x__x,    x__x,    KC_PSCR,        x__x, x__x,  x__x,  x__x,  x__x,
-        x__x,    C(KC_A), C(KC_S), KC_DEL,  LCTL(JP_SLSH),  x__x, KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT,
-        KC_LALT, C(KC_Z), C(KC_X), C(KC_C), C(KC_V),        x__x, x__x,    x__x,  x__x,  x__x,
-        KC_LGUI, KC_LCTL, x__x,                             x__x, KC_RSFT,  KC_RALT),
+        QK_BOOT, x__x,    x__x,    x__x,  KC_PSCR,     x__x, KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
+        x__x,    C(KC_A), C(KC_S), x__x,  x__x,        x__x, KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT,
+        KC_LGUI, C(KC_Z), C(KC_X), C(KC_C), C(KC_V),   MS_BTN1, MS_LEFT, MS_DOWN,  MS_UP,  MS_RGHT,
+        ALT_T(KC_SPC), CTL_T(KC_TAB), x__x,                             KC_DEL, SFT_T(KC_BSPC),  ALT_T(KC_ENT)),
     [_FUNC2] = LAYOUT_split_3x5_3(
         x__x, x__x,  x__x,  x__x,  x__x,            x__x,  x__x,  x__x,  x__x,  x__x,
         KC_F1,  KC_F2,  KC_F3,  KC_F4,  KC_F5,      KC_F6,  x__x,  x__x,  x__x,  x__x,
         KC_F7,  KC_F8,  KC_F9,  KC_F10,  KC_F11,    KC_F12,  x__x,  x__x,  x__x,  x__x,
-        KC_LGUI,  KC_LCTL,  x__x,                         x__x,  KC_RSFT,  KC_RALT)
+        ALT_T(KC_SPC), CTL_T(KC_TAB), x__x,                             x__x, SFT_T(KC_BSPC),  ALT_T(KC_ENT))
 };
 void matrix_init_user(void)
 {

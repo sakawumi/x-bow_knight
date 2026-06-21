@@ -16,11 +16,10 @@ void clicked(void) {
 }
 
 void turned(bool clockwise) {
-
-    if (IS_LAYER_ON(1)) {
-        tap_code16(clockwise ? MS_UP : MS_DOWN);
+    if (clockwise){
+        layer_on(1);
     } else {
-        tap_code16(clockwise ? MS_LEFT : MS_RGHT);
+        layer_off(1);
     }
 }
 

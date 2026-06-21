@@ -62,11 +62,11 @@ FUNC レイヤー: Esc/FUNC をホールド
 
   左手                              右手
   QK_BOOT  --       --       --       PrintScreen     --     --     --     --     --
-  --       Ctrl+A   Ctrl+S   Delete   Ctrl+/          --     Left   Down   Up     Right
-  LAlt     Ctrl+Z   Ctrl+X   Ctrl+C   Ctrl+V          --     --     --     --     --
+  --       Ctrl+A   Ctrl+S   Delete   RSFT            --     Left   Down   Up     Right
+  LGUI     Ctrl+Z   Ctrl+X   Ctrl+C   Ctrl+V          --     --     --     --     --
 
   左親指                            右親指
-  LGUI      LCTL     --             --       RSFT    RALT
+  Space/Alt Tab/Ctrl --             --       Bspc/Shift Enter/Alt
 
 
 FUNC2 レイヤー: Del/FUNC2 をホールド
@@ -78,7 +78,7 @@ FUNC2 レイヤー: Del/FUNC2 をホールド
   F7    F8    F9    F10    F11       F12   --    --    --    --
 
   左親指                            右親指
-  LGUI  LCTL  --                    --    RSFT  RALT
+  Space/Alt Tab/Ctrl --             --    Bspc/Shift Enter/Alt
 
 
 NICOLA on: 親指シフトなし
@@ -87,7 +87,7 @@ NICOLA on: 親指シフトなし
   左手                              右手
   。     か     た     こ     さ      ら     ち     く     つ     、
   う     し     て     け     せ      は     と     き     い     ん
-  。     ひ     す     ふ     へ      め     そ     ね     ほ     /
+  --     ひ     す     ふ     へ      め     そ     ね     ほ     /
 
 
 NICOLA on: 左親指シフト NG_SHFTL
@@ -116,7 +116,7 @@ NICOLA off 時に nicola_m_type() から出力される英字配列です。
   左手                              右手
   '      ,      .      p      y       f      g      c      r      l
   a      o      e      u      i       d      h      t      n      s
-  ;      q      j      k      x       b      m      w      v      z
+  --     q      j      k      x       b      m      w      v      z
 
 
 NICOLA off: 左親指シフト NG_SHFTL
@@ -130,8 +130,8 @@ NICOLA off: 左親指シフト NG_SHFTL
 
 NICOLA off: 右親指シフト NG_SHFTR
 ---------------------------------
-
+'Lp
   左手                              右手
   !      @      #      $      %       ^      &      *      (      )
   F1     F2     F3     F4     F5      F6     +      ?      {      }
-  :      F8     F9     F10    F11     F12    :      _      ~      |
+  --     F8     F9     F10    F11     F12    :      _      ~      |
