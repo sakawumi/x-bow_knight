@@ -46,6 +46,8 @@ static int nicola_m_key;
 static int nicola_o_key;
 static uint16_t nicola_m_time;
 static uint16_t nicola_o_time;
+static bool nicola_alt_held = false;
+static int nicola_alt_key;
 
 static int key_process_guard = 0;
 void keypress_timer_expired(void);
@@ -102,6 +104,10 @@ bool nicola_state(void) {
 
 // バッファをクリアする
 void nicola_clear(void) {
+  if(nicola_alt_held) {
+    unregister_code(KC_LALT);
+    nicola_alt_held = false;
+  }
   if(timeout_token != INVALID_DEFERRED_TOKEN) {
     cancel_deferred_exec(timeout_token);
     timeout_token = INVALID_DEFERRED_TOKEN;
@@ -194,6 +200,14 @@ void nicola_o_type(void) {
   switch(nicola_o_key){
     case NG_SHFTL: send_string(" "); break;
     case NG_SHFTR: send_string("\n");break;
+  }
+}
+
+void nicola_o_hold(void) {
+  if(!nicola_alt_held) {
+    register_code(KC_LALT);
+    nicola_alt_held = true;
+    nicola_alt_key = nicola_o_key;
   }
 }
 
@@ -378,8 +392,8 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
           case NICOLA_STATE_S3_O:
             // timeout check
             IF_TIMEOUT(curr_time - nicola_o_time > TIMEOUT_THRESHOLD) {
-              // timeout => (output O) => S2
-              nicola_o_type();
+              // timeout => hold Alt => S2
+              nicola_o_hold();
               nicola_int_state = NICOLA_STATE_S2_M;
             } else {
               // combo => S5
@@ -419,6 +433,11 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         cont_process = false;
     } else if(keycode == NG_SHFTL || keycode == NG_SHFTR) {
         // O key
+        if(nicola_alt_held) {
+          key_process_guard = 0;
+          return false;
+        }
+
         if (nicola_int_state == NICOLA_STATE_S3_O && nicola_o_key != keycode) {
           if (nicola_o_key == NG_SHFTL) {
             nicola_on();
@@ -492,7 +511,11 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
             nicola_m_type();
             break;
           case NICOLA_STATE_S3_O:
-            nicola_o_type();
+            IF_TIMEOUT(curr_time - nicola_o_time > TIMEOUT_THRESHOLD) {
+              nicola_o_hold();
+            } else if(!nicola_alt_held) {
+              nicola_o_type();
+            }
             break;
           case NICOLA_STATE_S4_MO:
             nicola_om_type();
@@ -506,7 +529,12 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         // continue processing current key, so this path returns true
     }
   } else { // key release
-    if(NG_TOP <= keycode && keycode <= NG_BOTTOM) { // key off
+    if(nicola_alt_held && keycode == nicola_alt_key) {
+        unregister_code(KC_LALT);
+        nicola_alt_held = false;
+        nicola_int_state = NICOLA_STATE_S1_INIT;
+        cont_process = false;
+    } else if(NG_TOP <= keycode && keycode <= NG_BOTTOM) { // key off
         switch(nicola_int_state) {
           case NICOLA_STATE_S1_INIT:
             break;
@@ -579,7 +607,7 @@ void keypress_timer_expired(void) {
                 nicola_m_type();
                 break;
             case NICOLA_STATE_S3_O:
-                nicola_o_type();
+                nicola_o_hold();
                 break;
             case NICOLA_STATE_S4_MO:
                 nicola_om_type();
