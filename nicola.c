@@ -89,11 +89,13 @@ void set_nicola(uint8_t layer) {
 // 親指シフトをオンオフ
 void nicola_on(void) {
   is_nicola = true;
+  tap_code16(KC_INT4);
   nicola_clear();
 }
 
 void nicola_off(void) {
   is_nicola = false;
+  tap_code16(KC_INT5);
   nicola_clear();
 }
 
@@ -104,6 +106,7 @@ bool nicola_state(void) {
 
 // バッファをクリアする
 void nicola_clear(void) {
+  layer_move(0);
   if(nicola_alt_held) {
     unregister_code(KC_LALT);
     nicola_alt_held = false;
@@ -143,7 +146,7 @@ void nicola_m_type(void) {
         case NG_L   : send_string("i" ); break;
         case NG_SCLN: send_string("nn"); break;
 
-        case NG_Z   :                    break;
+        case NG_Z   : nicola_off(); break;
         case NG_X   : send_string("hi"); break;
         case NG_C   : send_string("su"); break;
         case NG_V   : send_string("hu"); break;
@@ -181,7 +184,7 @@ void nicola_m_type(void) {
         case NG_SCLN: send_string("s"); break;
         //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
-        case NG_Z   :                   break;
+        case NG_Z   : tap_code16(KC_ESC); break;
 
         case NG_X   : send_string("q"); break;
         case NG_C   : send_string("j"); break;
@@ -312,7 +315,7 @@ void nicola_om_type(void) {
             case NG_F   : send_string("\"" ); break;
             case NG_G   : tap_code16(LCTL(JP_SLSH)); break;
 
-            case NG_H   : tap_code16(KC_F6); break;
+            case NG_H   :                 ; break;
             case NG_J   : send_string("="); break;
             case NG_K   : send_string("/"); break;
             case NG_L   : send_string("["); break;
@@ -323,8 +326,8 @@ void nicola_om_type(void) {
             case NG_X   : tap_code16(LCTL(KC_X)); break;
             case NG_C   : tap_code16(LCTL(KC_C)); break;
             case NG_V   : tap_code16(LCTL(KC_V)); break;
-            case NG_B   : tap_code16(KC_F11); break;
-            case NG_N   : tap_code16(KC_F12); break;
+            case NG_B   :                       ; break;
+            case NG_N   :                       ; break;
             case NG_M   : send_string(";" ); break;
             case NG_COMM: send_string("-"); break;
             case NG_DOT : send_string("`"); break;
@@ -441,10 +444,8 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         if (nicola_int_state == NICOLA_STATE_S3_O && nicola_o_key != keycode) {
           if (nicola_o_key == NG_SHFTL) {
             nicola_on();
-            tap_code16(KC_INT4);
           } else {
             nicola_off();
-            tap_code16(KC_INT5);
           }
 
           key_process_guard = 0;
