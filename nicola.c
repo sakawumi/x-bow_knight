@@ -33,6 +33,31 @@ static uint8_t nicola_layer = 0; // レイヤー番号
 #define TIMEOUT_THRESHOLD (150)
 #define OVERLAP_THRESHOLD (20)
 
+#ifndef NICOLA_SHFTL_TAP
+#define NICOLA_SHFTL_TAP KC_SPC
+#endif
+#ifndef NICOLA_SHFTR_TAP
+#define NICOLA_SHFTR_TAP KC_ENT
+#endif
+#ifndef NICOLA_SHFTL2_TAP
+#define NICOLA_SHFTL2_TAP KC_TAB
+#endif
+#ifndef NICOLA_SHFTR2_TAP
+#define NICOLA_SHFTR2_TAP KC_BSPC
+#endif
+#ifndef NICOLA_SHFTL_HOLD
+#define NICOLA_SHFTL_HOLD KC_LALT
+#endif
+#ifndef NICOLA_SHFTR_HOLD
+#define NICOLA_SHFTR_HOLD KC_LALT
+#endif
+#ifndef NICOLA_SHFTL2_HOLD
+#define NICOLA_SHFTL2_HOLD KC_LCTL
+#endif
+#ifndef NICOLA_SHFTR2_HOLD
+#define NICOLA_SHFTR2_HOLD KC_RSFT
+#endif
+
 typedef enum {
   NICOLA_STATE_S1_INIT,
   NICOLA_STATE_S2_M,
@@ -46,8 +71,9 @@ static int nicola_m_key;
 static int nicola_o_key;
 static uint16_t nicola_m_time;
 static uint16_t nicola_o_time;
-static bool nicola_alt_held = false;
-static int nicola_alt_key;
+static bool nicola_hold_registered = false;
+static int nicola_hold_key;
+static uint16_t nicola_hold_keycode;
 
 static int key_process_guard = 0;
 void keypress_timer_expired(void);
@@ -68,6 +94,48 @@ static void keypress_timer_start(void) {
     timeout_token = defer_exec(TIMEOUT_THRESHOLD, nicola_timeout, NULL);
   } else {
     extend_deferred_exec(timeout_token, TIMEOUT_THRESHOLD);
+  }
+}
+
+static bool nicola_is_o_key(uint16_t keycode) {
+  return keycode == NG_SHFTL || keycode == NG_SHFTR ||
+         keycode == NG_SHFTL2 || keycode == NG_SHFTR2;
+}
+
+static bool nicola_is_left_o_key(uint16_t keycode) {
+  return keycode == NG_SHFTL || keycode == NG_SHFTL2;
+}
+
+static bool nicola_is_mode_toggle_pair(uint16_t first_key, uint16_t second_key) {
+  return (first_key == NG_SHFTL && second_key == NG_SHFTR) ||
+         (first_key == NG_SHFTR && second_key == NG_SHFTL) ||
+         (first_key == NG_SHFTL2 && second_key == NG_SHFTR2) ||
+         (first_key == NG_SHFTR2 && second_key == NG_SHFTL2);
+}
+
+static uint16_t nicola_o_tap_keycode(uint16_t keycode) {
+  switch(keycode) {
+    case NG_SHFTL: return NICOLA_SHFTL_TAP;
+    case NG_SHFTR: return NICOLA_SHFTR_TAP;
+    case NG_SHFTL2: return NICOLA_SHFTL2_TAP;
+    case NG_SHFTR2: return NICOLA_SHFTR2_TAP;
+  }
+  return KC_NO;
+}
+
+static uint16_t nicola_o_hold_keycode(uint16_t keycode) {
+  switch(keycode) {
+    case NG_SHFTL: return NICOLA_SHFTL_HOLD;
+    case NG_SHFTR: return NICOLA_SHFTR_HOLD;
+    case NG_SHFTL2: return NICOLA_SHFTL2_HOLD;
+    case NG_SHFTR2: return NICOLA_SHFTR2_HOLD;
+  }
+  return KC_NO;
+}
+
+static void tap_code16_if_set(uint16_t keycode) {
+  if(keycode != KC_NO) {
+    tap_code16(keycode);
   }
 }
 
@@ -99,17 +167,24 @@ void nicola_off(void) {
   nicola_clear();
 }
 
+void layer_change(int layer_num) {
+  is_nicola = false;
+  tap_code16(KC_INT5);
+  layer_on(layer_num);
+} 
+
 // 親指シフトの状態
 bool nicola_state(void) {
   return is_nicola;
 }
 
+
 // バッファをクリアする
 void nicola_clear(void) {
-  layer_move(0);
-  if(nicola_alt_held) {
-    unregister_code(KC_LALT);
-    nicola_alt_held = false;
+  layer_move(_NICOLA);
+  if(nicola_hold_registered) {
+    unregister_code16(nicola_hold_keycode);
+    nicola_hold_registered = false;
   }
   if(timeout_token != INVALID_DEFERRED_TOKEN) {
     cancel_deferred_exec(timeout_token);
@@ -184,7 +259,7 @@ void nicola_m_type(void) {
         case NG_SCLN: send_string("s"); break;
         //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
-        case NG_Z   : tap_code16(KC_ESC); break;
+        case NG_Z   : nicola_off(); tap_code16(KC_ESC); break;
 
         case NG_X   : send_string("q"); break;
         case NG_C   : send_string("j"); break;
@@ -200,17 +275,102 @@ void nicola_m_type(void) {
 }
 
 void nicola_o_type(void) {
-  switch(nicola_o_key){
-    case NG_SHFTL: send_string(" "); break;
-    case NG_SHFTR: send_string("\n");break;
-  }
+  uint16_t tap_keycode = nicola_o_tap_keycode(nicola_o_key);
+  tap_code16_if_set(tap_keycode);
 }
 
 void nicola_o_hold(void) {
-  if(!nicola_alt_held) {
-    register_code(KC_LALT);
-    nicola_alt_held = true;
-    nicola_alt_key = nicola_o_key;
+  if(!nicola_hold_registered) {
+    nicola_hold_keycode = nicola_o_hold_keycode(nicola_o_key);
+    if(nicola_hold_keycode != KC_NO) {
+      register_code16(nicola_hold_keycode);
+      nicola_hold_registered = true;
+      nicola_hold_key = nicola_o_key;
+    }
+  }
+}
+
+void nicola_om_type_l2(void) {
+  switch(nicola_m_key) {
+      case NG_Q   : break;
+      case NG_W   : break;
+      case NG_E   : break;
+      case NG_R   : break;
+      case NG_T   : break;
+      case NG_Y   : break;
+      case NG_U   : break;
+      case NG_I   : break;
+      case NG_O   : break;
+      case NG_P   : break;
+      case NG_LBRC: break;
+      case NG_RBRC: break;
+
+      case NG_A   : break;
+      case NG_S   : break;
+      case NG_D   : break;
+      case NG_F   : break;
+      case NG_G   : break;
+      case NG_H   : break;
+      case NG_J   : break;
+      case NG_K   : break;
+      case NG_L   : break;
+      case NG_SCLN: break;
+      case NG_QUOT: break;
+
+      case NG_Z   : break;
+      case NG_X   : break;
+      case NG_C   : break;
+      case NG_V   : break;
+      case NG_B   : break;
+      case NG_N   : break;
+      case NG_M   : break;
+      case NG_COMM: break;
+      case NG_DOT : break;
+      case NG_SLSH: break;
+
+      default: break;
+  }
+}
+
+void nicola_om_type_r2(void) {
+  switch(nicola_m_key) {
+      case NG_Q   : break;
+      case NG_W   : break;
+      case NG_E   : break;
+      case NG_R   : break;
+      case NG_T   : break;
+      case NG_Y   : break;
+      case NG_U   : layer_change(_NUMBER); break;
+      case NG_I   : break;
+      case NG_O   : break;
+      case NG_P   : break;
+      case NG_LBRC: break;
+      case NG_RBRC: break;
+
+      case NG_A   : break;
+      case NG_S   : break;
+      case NG_D   : break;
+      case NG_F   : break;
+      case NG_G   : break;
+      case NG_H   : break;
+      case NG_J   : layer_change(_MOVE); break;
+      case NG_K   : break;
+      case NG_L   : break;
+      case NG_SCLN: break;
+      case NG_QUOT: break;
+
+      case NG_Z   : break;
+      case NG_X   : break;
+      case NG_C   : break;
+      case NG_V   : break;
+      case NG_B   : break;
+      case NG_N   : break;
+      case NG_M   : break;
+      case NG_COMM: break;
+      case NG_DOT : break;
+      case NG_SLSH: break;
+
+      default: break;
   }
 }
 
@@ -292,6 +452,10 @@ void nicola_om_type(void) {
             case NG_DOT : send_string("wa"); break;
             case NG_SLSH: send_string("lo"); break;
         }
+    } else if(nicola_o_key == NG_SHFTL2) {
+        nicola_om_type_l2();
+    } else if(nicola_o_key == NG_SHFTR2) {
+        nicola_om_type_r2();
     }
   } else {
         if(nicola_o_key == NG_SHFTL) {
@@ -369,6 +533,10 @@ void nicola_om_type(void) {
             case NG_DOT : send_string("~"); break;
             case NG_SLSH: send_string("|"); break;
         }
+    } else if(nicola_o_key == NG_SHFTL2) {
+        nicola_om_type_l2();
+    } else if(nicola_o_key == NG_SHFTR2) {
+        nicola_om_type_r2();
     }
   }
 }
@@ -395,7 +563,7 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
           case NICOLA_STATE_S3_O:
             // timeout check
             IF_TIMEOUT(curr_time - nicola_o_time > TIMEOUT_THRESHOLD) {
-              // timeout => hold Alt => S2
+              // timeout => hold configured modifier => S2
               nicola_o_hold();
               nicola_int_state = NICOLA_STATE_S2_M;
             } else {
@@ -434,15 +602,16 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         nicola_m_time = curr_time;
         keypress_timer_start();
         cont_process = false;
-    } else if(keycode == NG_SHFTL || keycode == NG_SHFTR) {
+    } else if(nicola_is_o_key(keycode)) {
         // O key
-        if(nicola_alt_held) {
+        if(nicola_hold_registered) {
           key_process_guard = 0;
           return false;
         }
 
-        if (nicola_int_state == NICOLA_STATE_S3_O && nicola_o_key != keycode) {
-          if (nicola_o_key == NG_SHFTL) {
+        if (nicola_int_state == NICOLA_STATE_S3_O &&
+            nicola_is_mode_toggle_pair(nicola_o_key, keycode)) {
+          if (nicola_is_left_o_key(nicola_o_key)) {
             nicola_on();
           } else {
             nicola_off();
@@ -514,7 +683,7 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
           case NICOLA_STATE_S3_O:
             IF_TIMEOUT(curr_time - nicola_o_time > TIMEOUT_THRESHOLD) {
               nicola_o_hold();
-            } else if(!nicola_alt_held) {
+            } else if(!nicola_hold_registered) {
               nicola_o_type();
             }
             break;
@@ -530,9 +699,9 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         // continue processing current key, so this path returns true
     }
   } else { // key release
-    if(nicola_alt_held && keycode == nicola_alt_key) {
-        unregister_code(KC_LALT);
-        nicola_alt_held = false;
+    if(nicola_hold_registered && keycode == nicola_hold_key) {
+        unregister_code16(nicola_hold_keycode);
+        nicola_hold_registered = false;
         nicola_int_state = NICOLA_STATE_S1_INIT;
         cont_process = false;
     } else if(NG_TOP <= keycode && keycode <= NG_BOTTOM) { // key off

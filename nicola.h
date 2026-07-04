@@ -26,6 +26,19 @@ bool nicola_state(void);
 bool process_nicola(uint16_t, keyrecord_t *);
 void set_nicola(uint8_t);
 
+// Override these in config.h to change thumb key tap/hold behavior:
+// NICOLA_SHFTL_TAP,  NICOLA_SHFTR_TAP,  NICOLA_SHFTL2_TAP,  NICOLA_SHFTR2_TAP
+// NICOLA_SHFTL_HOLD, NICOLA_SHFTR_HOLD, NICOLA_SHFTL2_HOLD, NICOLA_SHFTR2_HOLD
+
+
+enum keymap_layers
+{
+    _NICOLA,
+    _MOVE,
+    _NUMBER,
+    _GAME
+};
+
 typedef enum nicola_keycodes
 {
   NG_TOP = SAFE_RANGE,
@@ -71,8 +84,10 @@ typedef enum nicola_keycodes
 
   NG_SHFTL,
   NG_SHFTR,
+  NG_SHFTL2,
+  NG_SHFTR2,
 
-  NG_BOTTOM = NG_SHFTR,
+  NG_BOTTOM = NG_SHFTR2,
 
   FUNC_01,
   FUNC_ROGUE,

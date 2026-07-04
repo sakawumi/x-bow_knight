@@ -18,20 +18,12 @@
 #include "keymap_japanese.h"
 #define x__x KC_NO
 
-enum keymap_layers
-{
-    _NICOLA,
-    _MOVE,
-    _NUMBER,
-    _GAME
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_NICOLA] = LAYOUT_split_3x5_3(
         NG_Q,   NG_W, NG_E,  NG_R,  NG_T,             NG_Y,  NG_U,  NG_I,    NG_O,   NG_P,
         NG_A,   NG_S, NG_D,  NG_F,  NG_G,             NG_H,  NG_J,  NG_K,    NG_L,   NG_SCLN,
         NG_Z,   NG_X, NG_C,  NG_V,  NG_B,             NG_N, NG_M, NG_COMM  , NG_DOT, NG_SLSH,
-        NG_SHFTL , CTL_T(KC_TAB), _______,           KC_DEL, SFT_T(KC_BSPC), NG_SHFTR),
+        NG_SHFTL , NG_SHFTL2, _______,           KC_DEL, NG_SHFTR2, NG_SHFTR),
     [_MOVE] = LAYOUT_split_3x5_3(
         _______, _______,  _______,  _______,  _______,            _______,  KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
         _______, _______,  _______,  _______,  _______,            _______,  KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT,
