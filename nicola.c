@@ -294,9 +294,9 @@ void nicola_om_type(void) {
 
             case NG_A   : tap_code16(LCTL(KC_A)); break;
             case NG_S   : tap_code16(LCTL(KC_S)); break;
-            case NG_D   : tap_code16(KC_F3); break;
-            case NG_F   : tap_code16(LCTL(JP_SLSH)); break;
-            case NG_G   : tap_code16(KC_F5); break;
+            case NG_D   : send_string("'" ); break;
+            case NG_F   : send_string("\"" ); break;
+            case NG_G   : tap_code16(LCTL(JP_SLSH)); break;
 
             case NG_H   : tap_code16(KC_F6); break;
             case NG_J   : send_string("="); break;
