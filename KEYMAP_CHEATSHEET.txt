@@ -113,7 +113,7 @@ NICOLA on: 親指シフトなし
   左手                              右手
   . / 。   ka / か  ta / た  ko / こ  sa / さ   ra / ら  ti / ち  ku / く  tu / つ  , / 、
   u / う   si / し  te / て  ke / け  se / せ   ha / は  to / と  ki / き  i / い   nn / ん
-  off      hi / ひ  su / す  hu / ふ  he / へ   me / め  so / そ  ne / ね  ho / ほ  /
+  --       hi / ひ  su / す  hu / ふ  he / へ   me / め  so / そ  ne / ね  ho / ほ  /
 
 
 NICOLA on: 左親指シフト `NG_SHFTL`
@@ -137,12 +137,23 @@ NICOLA on: 右親指シフト `NG_SHFTR`
 NICOLA on: 補助右親指シフト `NG_SHFTR2`
 --------------------------------------
 
-`NG_SHFTR2` との同時打鍵は一部だけレイヤー移動に使われています。
+`NG_SHFTR2` との同時打鍵は一部だけレイヤー移動と Esc に使われています。
 
   左手                              右手
   --     --     --     --     --     --     NUMBER --     --     --
   --     --     --     --     --     --     MOVE   --     --     --
+  Esc    --     --     --     --     --     --     --     --     --
+
+
+NICOLA on: 補助左親指シフト `NG_SHFTL2`
+--------------------------------------
+
+`NG_SHFTL2` との同時打鍵は `Z` の Esc だけに使われています。
+
+  左手                              右手
   --     --     --     --     --     --     --     --     --     --
+  --     --     --     --     --     --     --     --     --     --
+  Esc    --     --     --     --     --     --     --     --     --
 
 
 NICOLA off: 親指シフトなし
@@ -153,7 +164,7 @@ NICOLA off: 親指シフトなし
   左手                              右手
   '      ,      .      p      y      f      g      c      r      l
   a      o      e      u      i      d      h      t      n      s
-  Esc    q      j      k      x      b      m      w      v      z
+  --     q      j      k      x      b      m      w      v      z
 
 
 NICOLA off: 左親指シフト `NG_SHFTL`
@@ -177,9 +188,20 @@ NICOLA off: 右親指シフト `NG_SHFTR`
 NICOLA off: 補助右親指シフト `NG_SHFTR2`
 ---------------------------------------
 
-NICOLA off でも `_MOVE` / `_NUMBER` への移動は同じです。
+NICOLA off でも `_MOVE` / `_NUMBER` への移動と `Z` の Esc は同じです。
 
   左手                              右手
   --     --     --     --     --     --     NUMBER --     --     --
   --     --     --     --     --     --     MOVE   --     --     --
+  Esc    --     --     --     --     --     --     --     --     --
+
+
+NICOLA off: 補助左親指シフト `NG_SHFTL2`
+---------------------------------------
+
+`NG_SHFTL2` との同時打鍵は `Z` の Esc だけに使われています。
+
+  左手                              右手
   --     --     --     --     --     --     --     --     --     --
+  --     --     --     --     --     --     --     --     --     --
+  Esc    --     --     --     --     --     --     --     --     --

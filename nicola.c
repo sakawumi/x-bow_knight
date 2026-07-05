@@ -221,7 +221,7 @@ void nicola_m_type(void) {
         case NG_L   : send_string("i" ); break;
         case NG_SCLN: send_string("nn"); break;
 
-        case NG_Z   : nicola_off(); break;
+        case NG_Z   : break;
         case NG_X   : send_string("hi"); break;
         case NG_C   : send_string("su"); break;
         case NG_V   : send_string("hu"); break;
@@ -259,8 +259,7 @@ void nicola_m_type(void) {
         case NG_SCLN: send_string("s"); break;
         //case NG_QUOT: send_string(SS_TAP(X_BSPACE)); break;
 
-        case NG_Z   : nicola_off(); tap_code16(KC_ESC); break;
-
+        case NG_Z   : break;
         case NG_X   : send_string("q"); break;
         case NG_C   : send_string("j"); break;
         case NG_V   : send_string("k"); break;
@@ -317,7 +316,7 @@ void nicola_om_type_l2(void) {
       case NG_SCLN: break;
       case NG_QUOT: break;
 
-      case NG_Z   : break;
+      case NG_Z   : nicola_off(); tap_code16(KC_ESC); break;
       case NG_X   : break;
       case NG_C   : break;
       case NG_V   : break;
@@ -359,7 +358,7 @@ void nicola_om_type_r2(void) {
       case NG_SCLN: break;
       case NG_QUOT: break;
 
-      case NG_Z   : break;
+      case NG_Z   : nicola_off(); tap_code16(KC_ESC); break;
       case NG_X   : break;
       case NG_C   : break;
       case NG_V   : break;
@@ -605,6 +604,9 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
     } else if(nicola_is_o_key(keycode)) {
         // O key
         if(nicola_hold_registered) {
+          if(keycode != nicola_hold_key) {
+            tap_code16_if_set(nicola_o_tap_keycode(keycode));
+          }
           key_process_guard = 0;
           return false;
         }
