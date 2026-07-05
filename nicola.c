@@ -306,7 +306,7 @@ void nicola_om_type_l2(void) {
 
       case NG_A   : break;
       case NG_S   : break;
-      case NG_D   : RGUI(KC_D); break;
+      case NG_D   : tap_code16(RGUI(KC_E)); break;
       case NG_F   : break;
       case NG_G   : break;
       case NG_H   : break;
