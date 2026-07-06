@@ -72,8 +72,8 @@ static int nicola_o_key;
 static uint16_t nicola_m_time;
 static uint16_t nicola_o_time;
 static bool nicola_hold_registered = false;
-static int nicola_hold_key;
-static uint16_t nicola_hold_keycode;
+static bool nicola_hold_keys_registered[4] = {false, false, false, false};
+static uint16_t nicola_hold_keycodes[4] = {KC_NO, KC_NO, KC_NO, KC_NO};
 
 static int key_process_guard = 0;
 void keypress_timer_expired(void);
@@ -111,6 +111,21 @@ static bool nicola_is_mode_toggle_pair(uint16_t first_key, uint16_t second_key) 
          (first_key == NG_SHFTR && second_key == NG_SHFTL) ||
          (first_key == NG_SHFTL2 && second_key == NG_SHFTR2) ||
          (first_key == NG_SHFTR2 && second_key == NG_SHFTL2);
+}
+
+static int8_t nicola_o_key_index(uint16_t keycode) {
+  switch(keycode) {
+    case NG_SHFTL: return 0;
+    case NG_SHFTR: return 1;
+    case NG_SHFTL2: return 2;
+    case NG_SHFTR2: return 3;
+  }
+  return -1;
+}
+
+static bool nicola_o_key_held(uint16_t keycode) {
+  int8_t hold_key_index = nicola_o_key_index(keycode);
+  return hold_key_index >= 0 && nicola_hold_keys_registered[hold_key_index];
 }
 
 static uint16_t nicola_o_tap_keycode(uint16_t keycode) {
@@ -182,10 +197,14 @@ bool nicola_state(void) {
 // バッファをクリアする
 void nicola_clear(void) {
   layer_move(_NICOLA);
-  if(nicola_hold_registered) {
-    unregister_code16(nicola_hold_keycode);
-    nicola_hold_registered = false;
+  for(uint8_t i = 0; i < 4; i++) {
+    if(nicola_hold_keys_registered[i]) {
+      unregister_code16(nicola_hold_keycodes[i]);
+      nicola_hold_keys_registered[i] = false;
+      nicola_hold_keycodes[i] = KC_NO;
+    }
   }
+  nicola_hold_registered = false;
   if(timeout_token != INVALID_DEFERRED_TOKEN) {
     cancel_deferred_exec(timeout_token);
     timeout_token = INVALID_DEFERRED_TOKEN;
@@ -279,12 +298,14 @@ void nicola_o_type(void) {
 }
 
 void nicola_o_hold(void) {
-  if(!nicola_hold_registered) {
-    nicola_hold_keycode = nicola_o_hold_keycode(nicola_o_key);
-    if(nicola_hold_keycode != KC_NO) {
-      register_code16(nicola_hold_keycode);
+  int8_t hold_key_index = nicola_o_key_index(nicola_o_key);
+  if(hold_key_index >= 0 && !nicola_hold_keys_registered[hold_key_index]) {
+    uint16_t hold_keycode = nicola_o_hold_keycode(nicola_o_key);
+    if(hold_keycode != KC_NO) {
+      register_code16(hold_keycode);
+      nicola_hold_keycodes[hold_key_index] = hold_keycode;
+      nicola_hold_keys_registered[hold_key_index] = true;
       nicola_hold_registered = true;
-      nicola_hold_key = nicola_o_key;
     }
   }
 }
@@ -603,14 +624,6 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         cont_process = false;
     } else if(nicola_is_o_key(keycode)) {
         // O key
-        if(nicola_hold_registered) {
-          if(keycode != nicola_hold_key) {
-            tap_code16_if_set(nicola_o_tap_keycode(keycode));
-          }
-          key_process_guard = 0;
-          return false;
-        }
-
         if (nicola_int_state == NICOLA_STATE_S3_O &&
             nicola_is_mode_toggle_pair(nicola_o_key, keycode)) {
           if (nicola_is_left_o_key(nicola_o_key)) {
@@ -685,7 +698,7 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
           case NICOLA_STATE_S3_O:
             IF_TIMEOUT(curr_time - nicola_o_time > TIMEOUT_THRESHOLD) {
               nicola_o_hold();
-            } else if(!nicola_hold_registered) {
+            } else if(!nicola_o_key_held(nicola_o_key)) {
               nicola_o_type();
             }
             break;
@@ -701,10 +714,18 @@ bool process_nicola(uint16_t keycode, keyrecord_t *record) {
         // continue processing current key, so this path returns true
     }
   } else { // key release
-    if(nicola_hold_registered && keycode == nicola_hold_key) {
-        unregister_code16(nicola_hold_keycode);
+    int8_t hold_key_index = nicola_o_key_index(keycode);
+    if(hold_key_index >= 0 && nicola_hold_keys_registered[hold_key_index]) {
+        unregister_code16(nicola_hold_keycodes[hold_key_index]);
+        nicola_hold_keys_registered[hold_key_index] = false;
+        nicola_hold_keycodes[hold_key_index] = KC_NO;
         nicola_hold_registered = false;
-        nicola_int_state = NICOLA_STATE_S1_INIT;
+        for(uint8_t i = 0; i < 4; i++) {
+          if(nicola_hold_keys_registered[i]) {
+            nicola_hold_registered = true;
+            break;
+          }
+        }
         cont_process = false;
     } else if(NG_TOP <= keycode && keycode <= NG_BOTTOM) { // key off
         switch(nicola_int_state) {
