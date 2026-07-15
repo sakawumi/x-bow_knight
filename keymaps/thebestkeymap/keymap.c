@@ -23,16 +23,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         NG_Q,   NG_W, NG_E,  NG_R,  NG_T,             NG_Y,  NG_U,  NG_I,    NG_O,   NG_P,
         NG_A,   NG_S, NG_D,  NG_F,  NG_G,             NG_H,  NG_J,  NG_K,    NG_L,   NG_SCLN,
         NG_Z,   NG_X, NG_C,  NG_V,  NG_B,             NG_N, NG_M, NG_COMM  , NG_DOT, NG_SLSH,
-        NG_SHFTL , NG_SHFTL2, _______,           KC_DEL, NG_SHFTR2, NG_SHFTR),
+        NG_SHFTL , NG_SHFTL2, MS_BTN1,           KC_DEL, NG_SHFTR2, NG_SHFTR),
     [_MOVE] = LAYOUT_split_3x5_3(
         _______, _______,  _______,  _______,  _______,            _______,  KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
         _______, _______,  _______,  _______,  _______,            _______,  KC_LEFT, KC_DOWN,  KC_UP,  KC_RIGHT,
-        _______, _______,  _______,  _______,  _______,            MS_BTN1,  MS_LEFT, MS_DOWN,  MS_UP,  MS_RGHT,
+        _______, _______,  _______,  _______,  _______,            _______, _______,  _______,  _______,  _______,
         _______, _______, _______,                             _______, _______,  _______),
     [_NUMBER] = LAYOUT_split_3x5_3(
         QK_BOOT, _______,  _______,  _______,  KC_PSCR,            _______,  KC_1,  KC_2,  KC_3,  _______,
-        KC_F1,  KC_F2,  KC_F3,  KC_F4,  KC_F5,                       KC_F6,  KC_4,  KC_5,  KC_6,  _______,
-        KC_F7,  KC_F8,  KC_F9,  KC_F10,  KC_F11,                     KC_F12,  KC_7,  KC_8,  KC_9,  KC_0,
+        _______, _______,  _______,  _______,  _______,            _______,  KC_4,  KC_5,  KC_6,  _______,
+        _______, _______,  _______,  _______,  _______,            _______,  KC_7,  KC_8,  KC_9,  KC_0,
         _______, _______, _______,                             _______, _______,  _______),
     [_GAME] = LAYOUT_split_3x5_3(
         KC_Q, KC_W, KC_E, KC_R, KC_T,            KC_Y, KC_U, KC_I, KC_O, KC_P,

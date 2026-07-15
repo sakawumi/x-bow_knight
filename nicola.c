@@ -331,17 +331,17 @@ void nicola_om_type_l2(void) {
       case NG_F   : break;
       case NG_G   : break;
       case NG_H   : break;
-      case NG_J   : break;
-      case NG_K   : break;
-      case NG_L   : break;
-      case NG_SCLN: break;
+      case NG_J   : tap_code16(KC_LEFT); break;
+      case NG_K   : tap_code16(KC_DOWN); break;
+      case NG_L   : tap_code16(KC_UP); break;
+      case NG_SCLN: tap_code16(KC_RIGHT); break;
       case NG_QUOT: break;
 
       case NG_Z   : nicola_off(); tap_code16(KC_ESC); break;
-      case NG_X   : break;
-      case NG_C   : break;
-      case NG_V   : break;
-      case NG_B   : break;
+      case NG_X   : tap_code16(RGUI(KC_LEFT)); break;
+      case NG_C   : tap_code16(RGUI(KC_DOWN));break;
+      case NG_V   : tap_code16(RGUI(KC_UP)); break;
+      case NG_B   : tap_code16(RGUI(KC_RIGHT)); break;
       case NG_N   : break;
       case NG_M   : break;
       case NG_COMM: break;
@@ -368,7 +368,7 @@ void nicola_om_type_r2(void) {
       case NG_RBRC: break;
 
       case NG_A   : break;
-      case NG_S   : break;
+      case NG_S   : tap_code16(RSFT(KC_F2)); break;
       case NG_D   : break;
       case NG_F   : break;
       case NG_G   : break;
@@ -384,7 +384,7 @@ void nicola_om_type_r2(void) {
       case NG_C   : break;
       case NG_V   : break;
       case NG_B   : break;
-      case NG_N   : break;
+      case NG_N   : tap_code16(RCTL(KC_F12)); break;
       case NG_M   : break;
       case NG_COMM: break;
       case NG_DOT : break;
