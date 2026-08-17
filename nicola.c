@@ -30,7 +30,7 @@ static bool is_nicola = false; // 親指シフトがオンかオフか
 static uint8_t nicola_layer = 0; // レイヤー番号
 // static uint8_t n_modifier = 0; // 押しているmodifierキーの数
 
-#define TIMEOUT_THRESHOLD (150)
+#define TIMEOUT_THRESHOLD (100)
 #define OVERLAP_THRESHOLD (20)
 
 #ifndef NICOLA_SHFTL_TAP
